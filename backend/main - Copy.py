@@ -1,43 +1,37 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-import openai, os, fitz, tempfile
-from dotenv import load_dotenv
-
-load_dotenv()
-
-openai.api_key = os.getenv("AZURE_OPENAI_KEY")
-openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
-openai.api_type = "azure"
-openai.api_version = "2024-12-01-preview"
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
+# Allow frontend to call the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # For local development; restrict in production
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.post("/analyze-resume/")
-async def analyze_resume(file: UploadFile = File(...)):
-    contents = await file.read()
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
-        temp.write(contents)
-        temp_path = temp.name
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    try:
+        contents = await file.read()
+        filename = file.filename
 
-    doc = fitz.open(temp_path)
-    text = ""
-    for page in doc:
-        text += page.get_text()
+        # Dummy logic for testing
+        ats_score = 78  # In a real app, GPT or parsing logic would come here
+        feedback = "Add more relevant keywords. Simplify formatting."
 
-    response = openai.ChatCompletion.create(
-        deployment_id=os.getenv("AZURE_DEPLOYMENT_NAME"),
-        messages=[
-            {"role": "system", "content": "You are an expert ATS resume analyzer."},
-            {"role": "user", "content": f"Analyze this resume for ATS friendliness and give score + feedback:\n\n{text}"}
-        ],
-        temperature=0.3
-    )
-    feedback = response['choices'][0]['message']['content']
-    return {"feedback": feedback}
+        return {
+            "filename": filename,
+            "score": ats_score,
+            "feedback": feedback,
+            "highlights": [
+                {"text": "Professional Summary", "suggestion": "Add impact metrics"},
+                {"text": "Skills", "suggestion": "Include more job-specific tools"}
+            ]
+        }
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
