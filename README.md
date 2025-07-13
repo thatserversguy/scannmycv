@@ -3,21 +3,30 @@
 
 This project demonstrates how to build, deploy, and run a Next.js + FastAPI application on Azure cloud, with full CI/CD automation using Azure DevOps — even on a free-tier Azure subscription with quotas and limitations.
 
-🚀 Features
+        🚀Features
+
 ✅ Upload your resume (PDF)
+
 ✅ Get ATS-friendly score (0–100%)
+
 ✅ AI-generated suggestions to improve your resume
+
 ✅ Fully automated CI/CD pipeline
+
 ✅ Deployed using cost-efficient Azure services
 
-🧰 Tech Stack
+
+        
+        🧰 Tech Stack
+
+
 Frontend: Next.js + TailwindCSS
 
 Backend: Python FastAPI + OpenAI GPT API
 
 CI/CD: Azure DevOps Pipelines (YAML)
 
-Cloud Infrastructure:
+        Cloud Infrastructure:
 
 Azure Static Web Apps (frontend)
 
@@ -25,12 +34,12 @@ Azure Container Instances (backend — due to free-tier quota on Web Apps)
 
 Azure DevOps (repo, pipeline, self-hosted agent)
 
-☁️ Cloud Architecture
+
+
+        ☁️Cloud Architecture
 Here’s how the app is architected:
 
-less
-Copy
-Edit
+
 [ GitHub / Azure Repos ]
         |
         v
@@ -48,6 +57,7 @@ Edit
 |         +                   |
 |  Container Instance (API)   |
 -------------------------------
+
 Frontend: hosted on Azure Static Web App
 
 Backend: containerized FastAPI app hosted on Azure Container Instance
